@@ -11,12 +11,15 @@
 
 #define LOG(level) Logger::log(level, "")
 
-#define TRACE LoggingLevel::trace
-#define DEBUG LoggingLevel::debug
-#define INFO LoggingLevel::info
-#define WARNING LoggingLevel::warning
-#define ERROR LoggingLevel::error
-#define FATAL LoggingLevel::fatal
+#define TRACE graphix::utilities::LoggingLevel::trace
+#define DEBUG graphix::utilities::LoggingLevel::debug
+#define INFO graphix::utilities::LoggingLevel::info
+#define WARNING graphix::utilities::LoggingLevel::warning
+#define ERROR graphix::utilities::LoggingLevel::error
+#define FATAL graphix::utilities::LoggingLevel::fatal
+
+namespace graphix {
+namespace utilities {
 
 enum class LoggingLevel : int {
     trace,
@@ -54,5 +57,8 @@ private:
 private:
     static std::unique_ptr<Logger> logger_;
 };
+
+} /* namespace utilities */
+} /* namespace graphix */
 
 #endif /* LOGGER_H */

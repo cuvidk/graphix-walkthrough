@@ -8,4 +8,6 @@ include_directories(utilities/include)
 
 add_compile_options(-std=c++11)
 
-add_executable(${executable_name} main.cpp utilities/src/logger.cpp)
+add_executable(${executable_name} main.cpp 
+        utilities/src/logger.cpp
+        utilities/src/file_reader.cpp)
