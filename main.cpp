@@ -15,7 +15,7 @@ int main() {
         return 1;
     }
 
-    GLFWwindow* window = glfwCreateWindow(640, 480, "Hello world", 0, nullptr);
+    GLFWwindow* window = glfwCreateWindow(640, 480, "Hello world", 0, NULL);
     if (!window) {
         LOG(FATAL) << "Failed to create a window \n";
         glfwTerminate();
@@ -48,7 +48,7 @@ int main() {
     glBindVertexArray(vao);
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
     char* vertex_shader_content;
 
@@ -61,7 +61,7 @@ int main() {
     }
 
     GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader, 1, &vertex_shader_content, nullptr);
+    glShaderSource(vertex_shader, 1, &vertex_shader_content, NULL);
     glCompileShader(vertex_shader);
 
     char* fragment_shader_content;
@@ -75,7 +75,7 @@ int main() {
     }
 
     GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &fragment_shader_content, nullptr);
+    glShaderSource(fragment_shader, 1, &fragment_shader_content, NULL);
     glCompileShader(fragment_shader);
 
     GLuint shader_program = glCreateProgram();
@@ -89,7 +89,7 @@ int main() {
 
         glBindVertexArray(vao);
         glUseProgram(shader_program);
-        glDrawArrays(0, 3, GL_TRIANGLES);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glfwSwapBuffers(window);
 
