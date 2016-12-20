@@ -9,7 +9,7 @@
 #include <sstream>
 #include <map>
 
-#define LOG(level) Logger::log(level, "")
+#define LOG(level) graphix::utilities::Logger::log(level, "")
 
 #define TRACE graphix::utilities::LoggingLevel::trace
 #define DEBUG graphix::utilities::LoggingLevel::debug
