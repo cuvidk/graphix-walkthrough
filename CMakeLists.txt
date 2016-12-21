@@ -10,6 +10,7 @@ add_compile_options(-std=c++11)
 
 add_executable(${executable_name} main.cpp 
         utilities/src/logger.cpp
-        utilities/src/file_reader.cpp)
+        utilities/src/file_reader.cpp
+        shader.cpp)
 
 target_link_libraries(${executable_name} -lGL -lglfw -lGLEW)
