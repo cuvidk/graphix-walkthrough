@@ -7,8 +7,16 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-void glfw_error_callback(int error_code, const char* description) {
-    LOG(ERROR) << "GLFW Error: code: " << error_code << ", message: " << description << ".\n";
+int g_gl_width = 640;
+int g_gl_height = 480;
+
+static void glfw_error_callback(int error_code, const char* description) {
+    LOG(ERROR) << "GLFW Error : code: " << error_code << ", message: " << description << "\n";
+}
+
+static void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
+    g_gl_width = width;
+    g_gl_height = height;
 }
 
 int main() {
@@ -21,16 +29,22 @@ int main() {
         LOG(FATAL) << "Failed to initialize GLFW \n";
         return 1;
     }
-    
+    glfwSetErrorCallback(glfw_error_callback);
+
+    //glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    //glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SAMPLES, 4);
 
-    GLFWwindow* window = glfwCreateWindow(640, 480, "Hello world", 0, nullptr);
+    GLFWwindow* window = glfwCreateWindow(g_gl_width, g_gl_height, "Hello world", 0, nullptr);
     if (!window) {
         LOG(FATAL) << "Failed to create a window \n";
         glfwTerminate();
         return 1;
     }
 
+    glfwSetWindowSizeCallback(window, glfw_window_size_callback);
     glfwMakeContextCurrent(window);
 
     glewExperimental = GL_TRUE;
@@ -40,12 +54,14 @@ int main() {
         glfwTerminate();
         return 1;
     }
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
     const GLubyte* renderer = glGetString(GL_RENDERER);
     const GLubyte* version = glGetString(GL_VERSION);
-    std::cout << "Renderer: " << renderer << std::endl;
-    std::cout << "Opengl version: " << version << std::endl;
 
+    LOG(INFO) << "Renderer: " << renderer << "\n";
+    LOG(INFO) << "GL version: " << version << "\n";
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -80,6 +96,7 @@ int main() {
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.3f, 0.0f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glViewport(0, 0, g_gl_width, g_gl_height);
 
         glBindVertexArray(vao);
         glUseProgram(shader_program);
@@ -88,6 +105,10 @@ int main() {
         glfwSwapBuffers(window);
 
         glfwPollEvents();
+
+        if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE)) {
+            glfwSetWindowShouldClose(window, 1);
+        }
     }
 
     glfwTerminate();
