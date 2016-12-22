@@ -11,7 +11,7 @@ namespace graphix {
 namespace engine {
 
 class Shader : public graphix::utilities::NonCopyable {
-    friend void attach_shader(const Shader& shader);
+    friend class ShaderProgram;
 
 public:
     enum class ShaderType {
@@ -25,6 +25,8 @@ public:
     Shader(Shader&& other);
     Shader& operator=(Shader&& other);
     ~Shader();
+
+    bool operator==(const Shader& other) const;
 
     const ShaderType& type() const;
     const std::string& source() const;

@@ -35,6 +35,10 @@ Shader::~Shader() {
     destroy();
 }
 
+bool Shader::operator==(const Shader& other) const {
+    return handle_ == other.handle_;
+}
+
 const Shader::ShaderType& Shader::type() const {
     return type_;
 }
