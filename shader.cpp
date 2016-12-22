@@ -10,9 +10,49 @@ namespace engine {
 Shader::Shader(const ShaderType& type, const std::string& source) :
     type_(type),
     source_(source) {
+    create();
+}
+
+Shader::Shader(ShaderType&& type, std::string&& source) :
+    type_(std::move(type)),
+    source_(std::move(source)) {
+    create();
+}
+
+Shader::Shader(Shader&& other) {
+    this->operator=(std::move(other));
+}
+
+Shader& Shader::operator=(Shader&& other) {
+    type_ = std::move(other.type_);
+    source_ = std::move(other.source_);
+    handle_ = std::move(other.handle_);
+    other.handle_ = 0;
+    return *this;
+}
+
+Shader::~Shader() {
+    destroy();
+}
+
+const Shader::ShaderType& Shader::type() const {
+    return type_;
+}
+
+const std::string& Shader::source() const {
+    return source_;
+}
+
+void Shader::destroy() {
+    if (handle_) {
+        glDeleteShader(handle_);
+    }
+}
+
+void Shader::create() {
     GLenum shader_type;
-    
-    switch (type) {
+
+    switch (type_) {
     case ShaderType::vertex_shader :
         shader_type = GL_VERTEX_SHADER;
         break;
@@ -23,12 +63,12 @@ Shader::Shader(const ShaderType& type, const std::string& source) :
 
     handle_ = glCreateShader(shader_type);
     if (!handle_) {
-        throw std::runtime_error("Failed to create shader with type: " + shader_type_to_string(type));
+        throw std::runtime_error("Failed to create shader with type: " + shader_type_to_string(type_));
     }
 
-    GLchar* shader_source = new GLchar[source.size() + 1];
-    source.copy(shader_source, source.size(), 0);
-    shader_source[source.size()] = 0;
+    GLchar* shader_source = new GLchar[source_.size() + 1];
+    source_.copy(shader_source, source_.size(), 0);
+    shader_source[source_.size()] = 0;
 
     glShaderSource(handle_, 1, &shader_source, nullptr);
     glCompileShader(handle_);
