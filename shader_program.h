@@ -26,6 +26,8 @@ public:
     std::string info() const;
     const Shader& shader_by_type(const Shader::ShaderType& shader_type);
 
+    GLuint handle() { return handle_; }
+
 private:
     void validate() const;
 
