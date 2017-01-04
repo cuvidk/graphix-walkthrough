@@ -1,4 +1,5 @@
 #include "shader.h"
+#include "logger.h"
 
 #include <map>
 #include <memory>
@@ -6,6 +7,7 @@
 
 namespace graphix {
 namespace engine {
+namespace shader {
 
 Shader::Shader(const ShaderType& type, const std::string& source) :
     type_(type),
@@ -32,7 +34,9 @@ Shader& Shader::operator=(Shader&& other) {
 }
 
 Shader::~Shader() {
-    destroy();
+    if (handle_) {
+        glDeleteShader(handle_);
+    }
 }
 
 bool Shader::operator==(const Shader& other) const {
@@ -47,10 +51,9 @@ const std::string& Shader::source() const {
     return source_;
 }
 
-void Shader::destroy() {
-    if (handle_) {
-        glDeleteShader(handle_);
-    }
+std::string Shader::info() const {
+    return "Shader: [ handle: " + std::to_string(handle_) +
+        ", type: " + shader_type_to_string(type_) + " ]";
 }
 
 void Shader::create() {
@@ -67,7 +70,7 @@ void Shader::create() {
 
     handle_ = glCreateShader(shader_type);
     if (!handle_) {
-        throw std::runtime_error("Failed to create shader with type: " + shader_type_to_string(type_));
+        throw std::runtime_error{"Failed to create shader with type: " + shader_type_to_string(type_)};
     }
 
     GLchar* shader_source = new GLchar[source_.size() + 1];
@@ -82,7 +85,7 @@ void Shader::create() {
     check_compile_status();
 }
 
-inline const std::string& Shader::shader_type_to_string(const ShaderType& type) const {
+inline const std::string& Shader::shader_type_to_string(const ShaderType& type) {
     static std::map<ShaderType, std::string> shader_type_to_string_mapper = {
         { ShaderType::vertex_shader, "GL_VERTEX_SHADER" },
         { ShaderType::fragment_shader, "GL_FRAGMENT_SHADER" }
@@ -93,14 +96,19 @@ inline const std::string& Shader::shader_type_to_string(const ShaderType& type) 
 
 void Shader::check_compile_status() const {
     GLint param;
+    std::unique_ptr<GLchar[]> log_info;
+    glGetShaderiv(handle_, GL_INFO_LOG_LENGTH, &param);
+    if (param > 1) {
+        log_info.reset(new GLchar[param]);
+        glGetShaderInfoLog(handle_, param, nullptr, log_info.get());
+        LOG(DEBUG) << info() << ". " << log_info.get() << "\n";
+    }
     glGetShaderiv(handle_, GL_COMPILE_STATUS, &param);
     if (param != GL_TRUE) {
-        glGetShaderiv(handle_, GL_INFO_LOG_LENGTH, &param);
-        std::unique_ptr<GLchar[]> info{new GLchar[param]};
-        glGetShaderInfoLog(handle_, param, nullptr, info.get());
-        throw std::runtime_error(std::string("Shader compilation error: ") + info.get());
+        throw std::runtime_error{info() + ". Shader compilation error: " + log_info.get()};
     }
 }
 
+} /* namespace shader */
 } /* namespace engine */
 } /* namespace graphix */

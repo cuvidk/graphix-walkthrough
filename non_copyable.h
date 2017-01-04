@@ -2,6 +2,7 @@
 #define NON_COPYABLE_H
 
 namespace graphix {
+namespace engine {
 namespace utilities {
 
 class NonCopyable {
@@ -14,6 +15,7 @@ public:
 };
 
 } /* namespace utilities */
+} /* namespace engine */
 } /* namespace graphix */
 
 #endif /* NON_COPYABLE_H */

@@ -1,6 +1,7 @@
 #include "logger.h"
 
 namespace graphix {
+namespace engine {
 namespace utilities {
 
 std::unique_ptr<Logger> Logger::logger_ = nullptr;
@@ -52,4 +53,5 @@ Logger::~Logger() {
 }
 
 } /* namespace utilities */
+} /* namespace engine */
 } /* namespace graphix */

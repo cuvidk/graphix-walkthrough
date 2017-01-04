@@ -9,16 +9,17 @@
 #include <sstream>
 #include <map>
 
-#define LOG(level) graphix::utilities::Logger::log(level, "")
+#define LOG(level) graphix::engine::utilities::Logger::log(level, "")
 
-#define TRACE graphix::utilities::LoggingLevel::trace
-#define DEBUG graphix::utilities::LoggingLevel::debug
-#define INFO graphix::utilities::LoggingLevel::info
-#define WARNING graphix::utilities::LoggingLevel::warning
-#define ERROR graphix::utilities::LoggingLevel::error
-#define FATAL graphix::utilities::LoggingLevel::fatal
+#define TRACE graphix::engine::utilities::LoggingLevel::trace
+#define DEBUG graphix::engine::utilities::LoggingLevel::debug
+#define INFO graphix::engine::utilities::LoggingLevel::info
+#define WARNING graphix::engine::utilities::LoggingLevel::warning
+#define ERROR graphix::engine::utilities::LoggingLevel::error
+#define FATAL graphix::engine::utilities::LoggingLevel::fatal
 
 namespace graphix {
+namespace engine {
 namespace utilities {
 
 enum class LoggingLevel : int {
@@ -59,6 +60,7 @@ private:
 };
 
 } /* namespace utilities */
+} /* namespace engine */
 } /* namespace graphix */
 
 #endif /* LOGGER_H */

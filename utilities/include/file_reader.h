@@ -4,6 +4,7 @@
 #include <string>
 
 namespace graphix {
+namespace engine {
 namespace utilities {
 
 class FileReader {
@@ -12,6 +13,7 @@ public:
 };
 
 } /* namespace utilities */
+} /* namespace engine */
 } /* namespace graphix */
 
 #endif /* FILE_READER_H */

@@ -5,6 +5,7 @@
 #include <stdexcept>
 
 namespace graphix {
+namespace engine {
 namespace utilities {
 
 std::string FileReader::read_content(const std::string& filename) {
@@ -17,8 +18,9 @@ std::string FileReader::read_content(const std::string& filename) {
         return file_content;
     }
     throw std::runtime_error{"Unable to read from file: " + filename +
-                             ". Cannot open file."};
+                             ". File does not exist/ failed to open."};
 }
 
 } /* namespace utilities */
+} /* namespace engine */
 } /* namespace graphix */

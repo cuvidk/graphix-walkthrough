@@ -9,8 +9,9 @@
 
 namespace graphix {
 namespace engine {
+namespace shader {
 
-class Shader : public graphix::utilities::NonCopyable {
+class Shader : public graphix::engine::utilities::NonCopyable {
     friend class ShaderProgram;
 
 public:
@@ -30,16 +31,12 @@ public:
 
     const ShaderType& type() const;
     const std::string& source() const;
-
-    void destroy();
-
-    //TODO: to be deleted
-    const GLuint& handle() const { return handle_; }
+    std::string info() const;
 
 private:
     void create();
 
-    const std::string& shader_type_to_string(const ShaderType& type) const;
+    static const std::string& shader_type_to_string(const ShaderType& type);
 
     void check_compile_status() const;
 
@@ -49,6 +46,7 @@ private:
     GLuint handle_;
 };
 
+} /* namespace shader */
 } /* namespace engine */
 } /* namespace graphix */
 

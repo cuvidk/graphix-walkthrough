@@ -1,6 +1,7 @@
 #include "logger.h"
 #include "file_reader.h"
 #include "shader.h"
+#include "shader_program.h"
 
 #include <iostream>
 
@@ -20,7 +21,8 @@ static void glfw_window_size_callback(GLFWwindow* window, int width, int height)
 }
 
 int main() {
-    using namespace graphix::utilities;
+    using namespace graphix::engine::utilities;
+    using namespace graphix::engine::shader;
     Logger::initialize("opengl.log");
 
     LOG(INFO) << "Starting GLFW\n";
@@ -84,14 +86,10 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
-    using namespace graphix::engine;
-    Shader vertex_shader{Shader::ShaderType::vertex_shader, FileReader::read_content("../shaders/vertex_shader.glsl")};
-    Shader fragment_shader{Shader::ShaderType::fragment_shader, FileReader::read_content("../shaders/fragment_shader.glsl")};
-
-    GLuint shader_program = glCreateProgram();
-    glAttachShader(shader_program, vertex_shader.handle());
-    glAttachShader(shader_program, fragment_shader.handle());
-    glLinkProgram(shader_program);
+    ShaderProgram shader_program;
+    shader_program.attach_shader({Shader::ShaderType::vertex_shader, FileReader::read_content("../shaders/vertex_shader.glsl")});
+    shader_program.attach_shader({Shader::ShaderType::fragment_shader, FileReader::read_content("../shaders/fragment_shader.glsl")});
+    shader_program.link();
 
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.3f, 0.0f, 0.5f, 1.0f);
@@ -99,7 +97,7 @@ int main() {
         glViewport(0, 0, g_gl_width, g_gl_height);
 
         glBindVertexArray(vao);
-        glUseProgram(shader_program);
+        shader_program.use();
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glfwSwapBuffers(window);
