@@ -101,11 +101,13 @@ void Shader::check_compile_status() const {
     if (param > 1) {
         log_info.reset(new GLchar[param]);
         glGetShaderInfoLog(handle_, param, nullptr, log_info.get());
+
+        glGetShaderiv(handle_, GL_COMPILE_STATUS, &param);
+        if (param != GL_TRUE) {
+            throw std::runtime_error{info() + ". Shader compilation error: " + log_info.get()};
+        }
+
         LOG(DEBUG) << info() << ". " << log_info.get() << "\n";
-    }
-    glGetShaderiv(handle_, GL_COMPILE_STATUS, &param);
-    if (param != GL_TRUE) {
-        throw std::runtime_error{info() + ". Shader compilation error: " + log_info.get()};
     }
 }
 

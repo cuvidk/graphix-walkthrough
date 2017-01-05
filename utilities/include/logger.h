@@ -3,10 +3,7 @@
 
 #include <fstream>
 #include <string>
-#include <chrono>
-#include <ctime>
 #include <memory>
-#include <sstream>
 #include <map>
 
 #define LOG(level) graphix::engine::utilities::Logger::log(level, "")
@@ -49,6 +46,7 @@ public:
 
     static void initialize(const std::string& file_name);
     static Logger& log(const LoggingLevel& level, const std::string& message);
+    static const std::string& log_destination();
 
     ~Logger();
 
@@ -56,6 +54,7 @@ private:
     Logger(const std::string& file_name);
 
 private:
+    static std::string log_destination_;
     static std::unique_ptr<Logger> logger_;
 };
 

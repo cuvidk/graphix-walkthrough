@@ -82,11 +82,13 @@ void ShaderProgram::check_link_status() const {
     if (param > 1) {
         log_info.reset(new GLchar[param]);
         glGetProgramInfoLog(handle_, param, nullptr, log_info.get());
+
+        glGetProgramiv(handle_, GL_LINK_STATUS, &param);
+        if (param != GL_TRUE) {
+            throw std::runtime_error{info() + ". Shader program linking error: " + log_info.get()};
+        }
+
         LOG(DEBUG) << info() << ". " << log_info.get() << "\n";
-    }
-    glGetProgramiv(handle_, GL_LINK_STATUS, &param);
-    if (param != GL_TRUE) {
-        throw std::runtime_error{info() + ". Shader program linking error: " + log_info.get()};
     }
 }
 
@@ -97,11 +99,13 @@ void ShaderProgram::check_validate_status() const {
     if (param > 1) {
         log_info.reset(new GLchar[param]);
         glGetProgramInfoLog(handle_, param, nullptr, log_info.get());
+
+        glGetProgramiv(handle_, GL_VALIDATE_STATUS, &param);
+        if (param != GL_TRUE) {
+            throw std::runtime_error{info() + ". Shader program validation error: " + log_info.get()};
+        }
+
         LOG(DEBUG) << info() << ". " << log_info.get() << "\n";
-    }
-    glGetProgramiv(handle_, GL_VALIDATE_STATUS, &param);
-    if (param != GL_TRUE) {
-        throw std::runtime_error{info() + ". Shader program validation error: " + log_info.get()};
     }
 }
 

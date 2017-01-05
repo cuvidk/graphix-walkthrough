@@ -1,12 +1,18 @@
 #include "logger.h"
 
+#include <chrono>
+#include <ctime>
+#include <sstream>
+
 namespace graphix {
 namespace engine {
 namespace utilities {
 
 std::unique_ptr<Logger> Logger::logger_ = nullptr;
+std::string Logger::log_destination_{};
 
 Logger::Logger(const std::string& file_name) : std::ofstream(file_name) {
+    log_destination_ = file_name;
     if (!*this) {
         throw std::runtime_error{"Failed to create logger. "
                                  "Failed to open output file: " + file_name + "."};
@@ -46,6 +52,10 @@ Logger& Logger::log(const LoggingLevel& level, const std::string& message) {
              << "[ " << date_ss.str() << " ]\t" << message;
 
     return *logger_;
+}
+
+const std::string& Logger::log_destination() {
+    return log_destination_;
 }
 
 Logger::~Logger() {
