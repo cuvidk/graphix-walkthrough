@@ -2,6 +2,7 @@
 #include "file_reader.h"
 #include "shader.h"
 #include "shader_program.h"
+#include "mat4.h"
 
 #include <iostream>
 #include <cassert>
@@ -40,6 +41,7 @@ static void update_fps_counter() {
 int main() {
     using namespace graphix::engine::utilities;
     using namespace graphix::engine::shader;
+    using namespace graphix::engine::math;
     try {
         Logger::initialize("opengl.log");
 
@@ -131,6 +133,11 @@ int main() {
 
         shader_program.link();
 
+        Mat4 translation_mat{};
+
+        GLint uniform_translation_mat = glGetUniformLocation(shader_program.handle(), "translation_mat");
+        assert(uniform_translation_mat > -1);
+
         while (!glfwWindowShouldClose(window)) {
             update_fps_counter();
 
@@ -140,6 +147,7 @@ int main() {
 
             glBindVertexArray(vao);
             shader_program.use();
+            glUniformMatrix4fv(uniform_translation_mat, 1, GL_TRUE, translation_mat.data_pointer());
             glDrawArrays(GL_TRIANGLES, 0, 3);
 
             glfwSwapBuffers(window);
@@ -148,6 +156,14 @@ int main() {
 
             if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE)) {
                 glfwSetWindowShouldClose(window, 1);
+            } else if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_RIGHT)) {
+                translation_mat.translate(0.009, 0.0f, 0.0f);
+            } else if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_LEFT)) {
+                translation_mat.translate(-0.009f, 0.0f, 0.0f);
+            } else if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_UP)) {
+                translation_mat.translate(0.0f, 0.009f, 0.0f);
+            } else if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_DOWN)) {
+                translation_mat.translate(0.0f, -0.009f, 0.0f);
             }
         }
 
