@@ -53,10 +53,10 @@ int main() {
         }
         glfwSetErrorCallback(glfw_error_callback);
 
-        //glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        //glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-        //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-        //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_SAMPLES, 4);
 
         GLFWwindow* window = glfwCreateWindow(g_gl_width, g_gl_height, "Hello world", 0, nullptr);
@@ -134,9 +134,12 @@ int main() {
         shader_program.link();
 
         Mat4 translation_mat{};
+        Mat4 rotation_crazines{};
 
         GLint uniform_translation_mat = glGetUniformLocation(shader_program.handle(), "translation_mat");
+        GLint uniform_rotation_z_mat = glGetUniformLocation(shader_program.handle(), "rotation_z_mat");
         assert(uniform_translation_mat > -1);
+        assert(uniform_rotation_z_mat > -1);
 
         while (!glfwWindowShouldClose(window)) {
             update_fps_counter();
@@ -147,7 +150,8 @@ int main() {
 
             glBindVertexArray(vao);
             shader_program.use();
-            glUniformMatrix4fv(uniform_translation_mat, 1, GL_TRUE, translation_mat.data_pointer());
+            glUniformMatrix4fv(uniform_translation_mat, 1, GL_TRUE, (float*)&translation_mat);
+            glUniformMatrix4fv(uniform_rotation_z_mat, 1, GL_TRUE, (float*)&rotation_crazines);
             glDrawArrays(GL_TRIANGLES, 0, 3);
 
             glfwSwapBuffers(window);
@@ -165,6 +169,9 @@ int main() {
             } else if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_DOWN)) {
                 translation_mat.translate(0.0f, -0.009f, 0.0f);
             }
+            rotation_crazines.rotate_x_axis(0.01f);
+            rotation_crazines.rotate_y_axis(0.01f);
+            rotation_crazines.rotate_z_axis(0.01f);
         }
 
         glfwTerminate();
